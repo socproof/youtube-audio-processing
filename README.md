@@ -1,43 +1,46 @@
-# YouTube Audio Processing
+##  YouTube Audio Processing
 
-## Description
+## Описание
 
-This project helps you download and transcribe the audio from public YouTube videos.
+Этот проект поможет вам загрузить аудио из публичных видео на YouTube и сделать его транскрипцию.
 
-## What You Need
+## Что вам понадобится
 
-* **Python:** Install Python on your computer from the official website: [https://www.python.org/downloads/](https://www.python.org/downloads/). Choose the version compatible with your operating system and follow the installation instructions.
-* **FFmpeg:** This project uses FFmpeg to handle audio conversion.
-    * **Windows:** Download the FFmpeg installer from the official site: [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html). Run the installer and follow the on-screen instructions. **Important:** During installation, make sure to check the option to "Add FFmpeg to the system PATH environment variable" so that the script can find FFmpeg.
-    * **macOS:** Install FFmpeg using Homebrew (if you have it installed): Open Terminal and run the command `brew install ffmpeg`.
-    * **Linux:** Install FFmpeg using your distribution's package manager. For example, on Ubuntu/Debian, run the command `sudo apt-get install ffmpeg`.
-* **This Project:** Clone the repository from GitHub [YouTube Audio Processing](https://github.com/socproof/youtube-audio-processing.git) or download the archive manually.
+* **Python:** Установите Python на свой компьютер с официального сайта: [https://www.python.org/downloads/](https://www.python.org/downloads/). Выберите версию, совместимую с вашей операционной системой, и следуйте инструкциям по установке.
+* **Этот проект:** Клонируйте репозиторий с GitHub: [YouTube Audio Processing](https://github.com/socproof/youtube-audio-processing.git) или скачайте архив вручную.
+* **FFmpeg:**  Этот проект использует FFmpeg для конвертации аудио. Вы можете установить его одним из следующих способов:
+    * **Вариант 1 (Предпочтительный): Установка FFmpeg из системного установщика/пакетного менеджера (рекомендуется):**
+        * **Windows:** Скачайте инсталлятор FFmpeg с официального сайта: [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html). Запустите инсталлятор и следуйте инструкциям на экране. **Важно:** Во время установки обязательно отметьте опцию "Add FFmpeg to the system PATH environment variable", чтобы скрипт мог найти FFmpeg.
+        * **macOS:** Установите FFmpeg, используя Homebrew (если он у вас установлен): Откройте Терминал и выполните команду `brew install ffmpeg`.
+        * **Linux:** Установите FFmpeg с помощью пакетного менеджера вашего дистрибутива. Например, на Ubuntu/Debian выполните команду `sudo apt-get install ffmpeg`.
+    * **Вариант 2 (Облегченный): Распаковка архива FFmpeg:**
+        * Для вашего удобства в репозиторий уже добавлены архивы с текущей версией FFmpeg. Просто распакуйте архив в папке `deps/{ваша ОС}` вашего локального репозитория. Например, для Windows путь будет `deps/windows/ffmpeg.tar.xz`.
 
-## Installation
+##  Установка
 
-1. **Open Terminal/Command Prompt:**
-    * **Windows:** Press `Win + R`, type `cmd`, and press `Enter`.
-    * **macOS:** Open "Spotlight" (click the magnifying glass icon in the top-right corner), type "Terminal", and press `Enter`.
-    * **Linux:** Launch the Terminal from your applications menu.
+1. **Откройте Терминал/Командную строку:**
+    * **Windows:** Нажмите `Win + R`, введите `cmd` и нажмите `Enter`.
+    * **macOS:** Откройте "Spotlight" (нажмите на значок лупы в правом верхнем углу), введите "Terminal" и нажмите `Enter`.
+    * **Linux:** Запустите Терминал из меню приложений.
 
-2. **Navigate to the Project Folder:**
-    * In Terminal, type `cd` (with a space after), then drag and drop the project folder from your file manager into the Terminal window, and press `Enter`.
+2. **Перейдите в папку проекта:**
+    * В Терминале введите `cd` (с пробелом после), затем перетащите папку проекта из файлового менеджера в окно Терминала или введите полный путь до корня репозитория и нажмите `Enter`.
 
-3. **Install Dependencies:**
-    * Type the command `pip install -r requirements.txt` and press `Enter`. This will install the necessary libraries for the project to work.
+3. **Установите зависимости:**
+    * Введите команду `pip install -r requirements.txt`  и нажмите `Enter`. Это установит необходимые библиотеки для работы проекта.
 
-## Usage
+## Использование
 
-1. **Run the Project:**
-    * In Terminal, type `python main.py` and press `Enter`.
+1. **Запустите проект:**
+    * В Терминале введите `python main.py` и нажмите `Enter`.
 
-2. **Enter the Video URL:**
-    * The program will ask you for a YouTube video link. Copy the link from your browser's address bar and paste it into the Terminal, then press `Enter`.
+2. **Введите URL-адрес видео:**
+    * Программа запросит ссылку на видео YouTube. Скопируйте ссылку из адресной строки браузера и вставьте ее в Терминал, затем нажмите `Enter`.
 
-3. **Wait for the Download to Finish:**
-    * The program will download the audio track of the video, convert it to WAV format, and save it in the `assets/audio` folder inside the project folder. The file name will match the video title.
+3. **Дождитесь завершения загрузки:**
+    * Программа загрузит аудиодорожку видео, конвертирует ее в формат WAV и сохранит в папку `assets/audio` внутри папки проекта. Имя файла будет соответствовать названию видео.
 
-## Additional Information
+## Дополнительная информация
 
-* Make sure you have the right to download and use content from YouTube.
-* The project is under development.  
+* Убедитесь, что у вас есть право загружать и использовать контент с YouTube.
+* Проект находится в разработке.
