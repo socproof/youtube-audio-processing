@@ -1,0 +1,5 @@
+RESULTPATH: "assets"                                # Папка для результатов
+MODEL_NAME: "large-v3-turbo"                        # Размер модели Whisper ("tiny", "base", "small", "medium", "large")
+LANG: "ru"                                          # Язык распознавания
+HF_TOKEN:                                           # !!! Замените на ваш токен Hugging Face !!!
+NUM_SPEAKERS: 2
