@@ -1,4 +1,9 @@
 *.iml
 .idea
 .venv
-audio
+*.wav
+*.mp3
+*.exe
+*.txt
+*.log
+params.yaml

@@ -52,6 +52,7 @@ def download_audio(url, output_dir="assets/audio"):
                 os.remove(audio_filename)
 
         print(f"Audio downloaded successfully to {output_dir}")
+        return wav_filename
 
     except Exception as e:
         print(f"An error occurred: {e}")

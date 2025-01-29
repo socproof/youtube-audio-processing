@@ -1,1 +1,5 @@
-yt_dlp==2025.01.15
+openai-whisper==20240930
+pyannote.audio==3.3.2
+torch==2.5.1
+yt_dlp==2025.1.26
+pydub==0.25.1
