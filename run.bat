@@ -25,7 +25,7 @@ if %errorlevel% neq 0 (
 
 :: Запуск контейнера с интерактивным терминалом
 echo Запуск контейнера с интерактивным терминалом...
-docker-compose run --service-ports app sh
+docker-compose run --service-ports app
 if %errorlevel% neq 0 (
     echo Ошибка при запуске контейнера.
     exit /b 1

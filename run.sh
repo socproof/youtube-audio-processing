@@ -25,7 +25,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Запуск контейнера с интерактивным терминалом..."
-docker-compose run --service-ports app sh
+docker-compose run --service-ports app
 
 if [ $? -ne 0 ]; then
     echo "Ошибка при запуске контейнера."

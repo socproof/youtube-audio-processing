@@ -27,7 +27,7 @@ def process_speech(filepath, params):
     t = Thread(target=timer, args=(stop_event,))
     t.start()
 
-    asr_model = whisper.load_model(name=params['MODEL_NAME'], device=device)
+    asr_model = whisper.load_model(name=params['MODEL_NAME'], device=device, download_root='assets/models')
     transcribe_options = dict(task="transcribe", language=params['LANG'])
 
     name = os.path.basename(filepath)
