@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   app:
     build: .
@@ -8,4 +6,11 @@ services:
         source: .
         target: /app
     working_dir: /app
-    tty: true
+    stdin_open: true  
+    tty: true         
+    command: sh       
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]

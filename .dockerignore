@@ -1,3 +1,13 @@
-__pycache__/
+.git
+__pycache__
 *.pyc
-.git/
+*.pyo
+*.pyd
+.Python
+env
+venv
+.venv
+*.sqlite3
+*.log
+*.swp
+.DS_Store
