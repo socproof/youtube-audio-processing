@@ -16,15 +16,15 @@ fi
 echo "Проверка наличия GPU..."
 if command -v nvidia-smi &> /dev/null; then
     echo "GPU обнаружен. Запуск с поддержкой GPU..."
-    COMPOSE_FILE="docker-compose.yml:docker-compose.gpu.yml"
+    COMPOSE_FILES="-f docker-compose.yml -f docker-compose.gpu.yml"
 else
     echo "GPU не обнаружен. Запуск без поддержки GPU..."
-    COMPOSE_FILE="docker-compose.yml"
+    COMPOSE_FILES="-f docker-compose.yml"
 fi
 
 # Сборка и запуск контейнера
 echo "Запуск контейнера в фоновом режиме..."
-docker-compose -f $COMPOSE_FILE up -d
+docker-compose $COMPOSE_FILES up -d
 
 if [ $? -ne 0 ]; then
     echo "Ошибка при сборке Docker-образа."
@@ -32,7 +32,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Получение имени (или ID) запущенного контейнера
-CONTAINER_ID=$(docker-compose -f $COMPOSE_FILE ps -q app)
+CONTAINER_ID=$(docker-compose $COMPOSE_FILES ps -q app)
 
 if [ -z "$CONTAINER_ID" ]; then
     echo "Контейнер с именем 'app' не найден. Проверьте docker-compose.yml и попробуйте снова."
