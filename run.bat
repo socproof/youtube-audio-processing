@@ -15,19 +15,28 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Сборка Docker-образа
-echo Сборка Docker-образа...
-docker-compose build
+:: Запуск контейнера в фоновом режиме
+echo Запуск контейнера в фоновом режиме...
+docker-compose up -d
 if %errorlevel% neq 0 (
-    echo Ошибка при сборке Docker-образа.
+    echo Ошибка при запуске контейнера.
     exit /b 1
 )
 
-:: Запуск контейнера с интерактивным терминалом
-echo Запуск контейнера с интерактивным терминалом...
-docker-compose run --service-ports app
+:: Получение имени (или ID) запущенного контейнера
+for /f "tokens=*" %%i in ('docker-compose ps -q app') do set CONTAINER_ID=%%i
+
+:: Проверка, удалось ли получить контейнер
+if "%CONTAINER_ID%"=="" (
+    echo Контейнер с именем "app" не найден. Проверьте docker-compose.yml и попробуйте снова.
+    exit /b 1
+)
+
+:: Запуск Python-скрипта внутри контейнера
+echo Запуск Python-скрипта main.py внутри контейнера...
+docker exec -it %CONTAINER_ID% python main.py
 if %errorlevel% neq 0 (
-    echo Ошибка при запуске контейнера.
+    echo Ошибка при выполнении Python-скрипта внутри контейнера.
     exit /b 1
 )
 
