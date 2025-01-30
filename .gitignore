@@ -8,3 +8,4 @@
 *.log
 params.yaml
 __pycache__
+assets/models
