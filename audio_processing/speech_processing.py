@@ -2,6 +2,7 @@ import whisper
 import os
 import torch
 import time
+from pydub import AudioSegment
 from pyannote.audio import Pipeline
 from threading import Thread, Event
 from concurrent.futures import ThreadPoolExecutor
@@ -12,10 +13,12 @@ from audio_processing.utils import diarize_text, write_to_txt, timer, split_audi
 def process_speech(filepath, params):
     """
     Transcribes audio files using Whisper and performs speaker diarization using Pyannote.
+
     Args:
         filepath (str): Path to the audio file.
         params (dict): Parameters for transcription and diarization.
     """
+
     os.makedirs(params['RESULTPATH'], exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -31,14 +34,12 @@ def process_speech(filepath, params):
     name = os.path.basename(filepath)
     resultpath = os.path.join(params['RESULTPATH'], '{}_ts.txt'.format(name.rsplit('.', 1)[0]))
 
+    converted_filepath = convert_audio(filepath)
+
     try:
-        # Запускаем диаризацию в основном потоке
-        print("\nStarting diarization...")
-        start_time = time.time()
-        pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-3.1", use_auth_token=params['HF_TOKEN'])
-        diarization_result = pipeline(filepath, num_speakers=params['NUM_SPEAKERS'])
-        dt = (time.time() - start_time) / 60
-        print("\nDiarization complete, it took {} minutes".format(round(dt, 2)))
+        # Запускаем диаризацию в отдельном потоке
+        diarization_thread = Thread(target=run_diarization, args=(converted_filepath, params))
+        diarization_thread.start()
 
         # Разделяем аудио на чанки
         chunks = split_audio(filepath)
@@ -53,6 +54,8 @@ def process_speech(filepath, params):
         for result in asr_results:
             asr_result["segments"].extend(result["segments"])
 
+        diarization_thread.join()
+
         final_result = diarize_text(asr_result, diarization_result)
         write_to_txt(final_result, resultpath)
 
@@ -61,6 +64,27 @@ def process_speech(filepath, params):
     finally:
         stop_event.set()
         t.join()
+
+def convert_audio(filepath):
+    """
+    Конвертирует аудиофайл в моно, 16 кГц, WAV.
+    Args:
+        filepath (str): Путь к исходному аудиофайлу.
+    Returns:
+        str: Путь к преобразованному файлу.
+    """
+    # Загружаем аудиофайл
+    audio = AudioSegment.from_file(filepath)
+    
+    # Преобразуем в моно и 16 кГц
+    audio = audio.set_frame_rate(16000).set_channels(1)
+    
+    # Сохраняем в формате WAV
+    wav_path = filepath.rsplit('.', 1)[0] + "_converted.wav"
+    audio.export(wav_path, format="wav")
+    
+    print(f"Аудиофайл преобразован и сохранен как {wav_path}")
+    return wav_path
 
 def run_diarization(filepath, params):
     """Performs diarization."""
