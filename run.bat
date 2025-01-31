@@ -15,16 +15,27 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+:: Проверка наличия GPU
+echo Проверка наличия GPU...
+nvidia-smi >nul 2>&1
+if %errorlevel% equ 0 (
+    echo GPU обнаружен. Запуск с поддержкой GPU...
+    set COMPOSE_FILE=docker-compose.yml:docker-compose.gpu.yml
+) else (
+    echo GPU не обнаружен. Запуск без поддержки GPU...
+    set COMPOSE_FILE=docker-compose.yml
+)
+
 :: Запуск контейнера в фоновом режиме
 echo Запуск контейнера в фоновом режиме...
-docker-compose up -d
+docker-compose -f %COMPOSE_FILE% up -d
 if %errorlevel% neq 0 (
     echo Ошибка при запуске контейнера.
     exit /b 1
 )
 
 :: Получение имени (или ID) запущенного контейнера
-for /f "tokens=*" %%i in ('docker-compose ps -q app') do set CONTAINER_ID=%%i
+for /f "tokens=*" %%i in ('docker-compose -f %COMPOSE_FILE% ps -q app') do set CONTAINER_ID=%%i
 
 :: Проверка, удалось ли получить контейнер
 if "%CONTAINER_ID%"=="" (
