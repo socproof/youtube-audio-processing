@@ -12,12 +12,10 @@ from audio_processing.utils import diarize_text, write_to_txt, timer, split_audi
 def process_speech(filepath, params):
     """
     Transcribes audio files using Whisper and performs speaker diarization using Pyannote.
-
     Args:
         filepath (str): Path to the audio file.
         params (dict): Parameters for transcription and diarization.
     """
-
     os.makedirs(params['RESULTPATH'], exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
@@ -34,9 +32,13 @@ def process_speech(filepath, params):
     resultpath = os.path.join(params['RESULTPATH'], '{}_ts.txt'.format(name.rsplit('.', 1)[0]))
 
     try:
-        # Запускаем диаризацию в отдельном потоке
-        diarization_thread = Thread(target=run_diarization, args=(filepath, params))
-        diarization_thread.start()
+        # Запускаем диаризацию в основном потоке
+        print("\nStarting diarization...")
+        start_time = time.time()
+        pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-3.1", use_auth_token=params['HF_TOKEN'])
+        diarization_result = pipeline(filepath, num_speakers=params['NUM_SPEAKERS'])
+        dt = (time.time() - start_time) / 60
+        print("\nDiarization complete, it took {} minutes".format(round(dt, 2)))
 
         # Разделяем аудио на чанки
         chunks = split_audio(filepath)
@@ -50,8 +52,6 @@ def process_speech(filepath, params):
         asr_result = {"segments": []}
         for result in asr_results:
             asr_result["segments"].extend(result["segments"])
-
-        diarization_thread.join()
 
         final_result = diarize_text(asr_result, diarization_result)
         write_to_txt(final_result, resultpath)
