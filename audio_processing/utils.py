@@ -1,8 +1,6 @@
-import os
 import sys
 import time
 
-from pydub import AudioSegment
 from pyannote.core import Segment
 
 PUNC_SENT_END = {'.', '?', '!'}  # Using a set for faster lookups
@@ -70,16 +68,3 @@ def timer(stop_event):
         seconds += 1
         time.sleep(1)
     sys.stdout.write("\nTimer stopped.\n")
-
-def split_audio(filepath, chunk_length_ms=600000):
-    """Splits an audio file into chunks of specified length in milliseconds."""
-    audio = AudioSegment.from_file(filepath)
-    return [audio[i:i + chunk_length_ms] for i in range(0, len(audio), int(chunk_length_ms))]
-
-def process_chunk(asr_model, chunk, transcribe_options):
-    """Processes a single audio chunk using the ASR model."""
-    chunk_path = "temp_chunk.wav"
-    chunk.export(chunk_path, format="wav")
-    result = asr_model.transcribe(chunk_path, **transcribe_options)
-    os.remove(chunk_path)
-    return result
