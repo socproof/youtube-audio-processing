@@ -1,0 +1,11 @@
+*.iml
+.idea
+.venv
+*.wav
+*.mp3
+*.exe
+*.txt
+*.log
+params.yaml
+__pycache__
+assets/models

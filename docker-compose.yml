@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    working_dir: /app
+    stdin_open: true  
+    tty: true
