@@ -35,27 +35,64 @@ def merge_sentence(spk_text):
         text_cache.append((seg, speaker, text))
         current_speaker = speaker
 
-        if text and text[-1] in PUNC_SENT_END:  # Check if text is not empty
+        if text and text[-1] in PUNC_SENT_END:
             merged_spk_text.append(merge_cache(text_cache))
             text_cache = []
-            current_speaker = None  # Reset speaker after sentence end
+            current_speaker = None
 
-    if text_cache:  # Handle remaining segments
+    if text_cache:
         merged_spk_text.append(merge_cache(text_cache))
 
     return merged_spk_text
 
+def merge_consecutive_speaker_segments(diarized_segments):
+    """Combines consecutive lines of one speaker."""
+    merged_segments = []
+    current_segment = None
+
+    for segment in diarized_segments:
+        if current_segment is None:
+            current_segment = segment
+        elif current_segment['speaker'] == segment['speaker']:
+            current_segment['end'] = segment['end']
+            current_segment['text'] += " " + segment['text']
+        else:
+            merged_segments.append(current_segment)
+            current_segment = segment
+
+    if current_segment is not None:
+        merged_segments.append(current_segment)
+
+    return merged_segments
+
 def diarize_text(transcribe_res, diarization_result):
-    """Combines transcription and diarization results into a single output."""
+    """Combines transcription and diarization results."""
     timestamp_texts = get_text_with_timestamp(transcribe_res)
     spk_text = add_speaker_info_to_text(timestamp_texts, diarization_result)
-    return merge_sentence(spk_text)
+    merged_spk_text = merge_sentence(spk_text)
+
+    diarized_segments = []
+    for seg, speaker, sentence in merged_spk_text:
+        diarized_segments.append({
+            'start': seg.start,
+            'end': seg.end,
+            'speaker': speaker,
+            'text': sentence
+        })
+
+    merged_segments = merge_consecutive_speaker_segments(diarized_segments)
+
+    return merged_segments
 
 def write_to_txt(spk_sent, file):
-    """Writes diarized sentences with timestamps and speaker information to a text file."""
+    """Saves the merged replicas to a file."""
     with open(file, 'w', encoding="utf-8") as fp:
-        for seg, spk, sentence in spk_sent:
-            fp.write(f'{seg.start:.2f} {seg.end:.2f} {spk} {sentence}\n')
+        for segment in spk_sent:
+            start_time = segment['start']
+            end_time = segment['end']
+            speaker = segment['speaker']
+            text = segment['text']
+            fp.write(f'{start_time:.2f} {end_time:.2f} {speaker} {text}\n')
         print(f'File has been written to {file}')
 
 def timer(stop_event):
